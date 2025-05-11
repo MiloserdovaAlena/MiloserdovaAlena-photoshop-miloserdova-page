@@ -3,11 +3,11 @@ import { EditorPage } from './pages';
 
 function App() {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <Routes>
         <Route path="/" element={<EditorPage />} />
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
   )
 }
 export default App
