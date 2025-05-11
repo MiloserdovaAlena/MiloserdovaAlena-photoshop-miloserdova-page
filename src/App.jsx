@@ -1,15 +1,14 @@
-import React from 'react';
-import UploadSection from './organisms/UploadSection';
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { EditorPage } from './pages';
 
-export default function App() {
+function App() {
   return (
-    <div className="wrapper" style={{ maxWidth: '768px', margin: '0 auto' }}>
-      <div style={{ margin: '2rem 0' }}>
-        <h4 style={{ marginBottom: '1rem' }}>
-          Загрузка и просмотр изображения
-        </h4>
-        <UploadSection />
-      </div>
-    </div>
-  );
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<EditorPage />} />
+      </Routes>
+    </BrowserRouter>
+  )
 }
+export default App
+

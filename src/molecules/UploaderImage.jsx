@@ -9,7 +9,7 @@ export default function UploaderImage({ fileRef, onUpload }) {
         accept='.png,.jpg,.jpeg,.gb7'
         onChange={() => onUpload()}
       />
-      <Button onClick={() => fileRef.current?.click()}>Загрузить</Button>
+      <Button style={{marginRight: '10px'}} onClick={() => fileRef.current?.click()}>Загрузить</Button>
     </>
   );
 }
