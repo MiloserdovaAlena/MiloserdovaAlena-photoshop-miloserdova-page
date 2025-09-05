@@ -1,16 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
 
 const CanvasSectionStyle = {
-  maxWidth: '90vw',
-  maxHeight: '65vh',
-  width: 'auto',
-  height: 'auto',
-  display: 'block',
-  margin: '16px auto',
-  border: '1px solid #fff',
-  backgroundColor: '#f0f0f0',
+  width: '100%',
+  height: '100%',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  margin: 0,
+  border: 'none',
+  backgroundColor: '#242424',
   position: 'relative',
-  overflow: 'auto',
+  overflow: 'hidden',
 };
 export default function CanvasSection({
   data,
@@ -59,49 +59,34 @@ export default function CanvasSection({
   useEffect(() => {
     const c = containerRef.current;
     if (!c) return;
-    const onMouseDown = e => {
+    const handleMouseDown = (e) => {
       if (activeTool !== 'hand') return;
       setDragging(true);
       dragStart.current = { x: e.clientX - offset.x, y: e.clientY - offset.y };
+      e.preventDefault();
     };
-    const onMouseMove = e => {
-      if (activeTool !== 'hand' || !dragging) return;
+    const handleMouseMove = (e) => {
+      if (!dragging) return;
       setOffset({ x: e.clientX - dragStart.current.x, y: e.clientY - dragStart.current.y });
     };
-    const onMouseUp = () => {
-      if (activeTool === 'hand') setDragging(false);
-    };
-    c.addEventListener('mousedown', onMouseDown);
-    window.addEventListener('mousemove', onMouseMove);
-    window.addEventListener('mouseup', onMouseUp);
+    const handleMouseUp = () => setDragging(false);
+
+    c.addEventListener('mousedown', handleMouseDown);
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseup', handleMouseUp);
     return () => {
-      c.removeEventListener('mousedown', onMouseDown);
-      window.removeEventListener('mousemove', onMouseMove);
-      window.removeEventListener('mouseup', onMouseUp);
+      c.removeEventListener('mousedown', handleMouseDown);
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [activeTool, dragging, offset]);
+  }, [dragging, activeTool, offset]);
 
-  useEffect(() => {
-    const onKey = e => {
-      if (activeTool !== 'hand') return;
-      const step = 10;
-      if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.key)) {
-        e.preventDefault();
-        setOffset(o => ({
-          x: o.x + (e.key === 'ArrowLeft' ? step : e.key === 'ArrowRight' ? -step : 0),
-          y: o.y + (e.key === 'ArrowUp' ? step : e.key === 'ArrowDown' ? -step : 0),
-        }));
-      }
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [activeTool]);
-
-  const handleClick = e => {
+  const handleClick = (e) => {
     if (activeTool !== 'eyedropper') return;
-    const canvasRect = canvasRef.current.getBoundingClientRect();
-    const rawX = Math.floor((e.clientX - canvasRect.left) / scale);
-    const rawY = Math.floor((e.clientY - canvasRect.top) / scale);
+    const rect = canvasRef.current.getBoundingClientRect();
+    const rawX = Math.floor((e.clientX - rect.left) / (rect.width / (width * scale)));
+    const rawY = Math.floor((e.clientY - rect.top) / (rect.height / (height * scale)));
+
     const x = Math.max(0, Math.min(width - 1, rawX));
     const y = Math.max(0, Math.min(height - 1, rawY));
 
